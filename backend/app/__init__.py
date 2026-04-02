@@ -7,6 +7,7 @@ from .models.rss_wechat_article import RssWechatArticle  # noqa: F401
 from .api.auth import bp_auth
 from .api.sources import bp_sources
 from .db_migrate import migrate_sqlite
+from .services.seed_default_sources import ensure_default_sources
 import os
 
 def create_app():
@@ -19,6 +20,7 @@ def create_app():
     with app.app_context():
         db.create_all()
         migrate_sqlite(db.engine)
+        ensure_default_sources()
     
     app.register_blueprint(bp_auth, url_prefix="/api/auth")
     app.register_blueprint(bp_sources, url_prefix="/api/sources")

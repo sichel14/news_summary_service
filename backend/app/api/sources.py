@@ -11,6 +11,24 @@ from app.services.rss_sync import sync_rss_for_source
 bp_sources = Blueprint("sources", __name__)
 
 
+@bp_sources.get("/list")
+@jwt_required
+def list_information_sources():
+    """列出所有信息源（含默认种子：Synced、Anyfeeder/cnBeta），便于取 id 调 sync。"""
+    rows = InformationSource.query.order_by(InformationSource.id).all()
+    return jsonify(
+        [
+            {
+                "id": r.id,
+                "name": r.name,
+                "intro": r.intro,
+                "rss_url": r.rss_url,
+            }
+            for r in rows
+        ]
+    )
+
+
 @bp_sources.post("add_src")
 @jwt_required
 def add_information_source():
